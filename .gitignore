@@ -168,3 +168,21 @@ $RECYCLE.BIN/
 .fuse_hidden*
 .Trash-*
 .nfs*
+
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.template
+.terraform/
+tfplan
+tfplan.*
+*.tfplan
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
