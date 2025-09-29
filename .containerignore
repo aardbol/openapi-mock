@@ -1,0 +1,72 @@
+# Version control & CI/CD
+.git*
+.travis.yml
+Jenkinsfile
+.circleci/
+.scrutinizer.yml
+.golangci.yml
+
+# Documentation
+*.md
+docs/
+examples/
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+bin/
+dist/
+build/
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.tar.gz
+*.zip
+*.test
+*.out
+
+# Test files
+*_test.go
+test*
+
+# Container files
+Containerfile*
+Dockerfile*
+.containerignore
+.dockerignore
+docker-compose.*
+*.docker-compose.*
+
+# Dependency management (keep go.mod and go.sum)
+vendor/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.log
+
+# Configuration files
+config/
+*.example.*
+.env*
+*.env
+
+# License and legal
+LICENSE*
+COPYING*
+
+# Infrastructure & Scripts
+iac/
+scripts/

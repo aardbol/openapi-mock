@@ -1,0 +1,54 @@
+name: Deploy OpenAPI Mock
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to deploy to (testing/production)'
+        required: true
+        type: string
+      commit_sha:
+        required: true
+        type: string
+    secrets:
+      KUBECONFIG:
+        required: true
+      GHCR_TOKEN:
+        required: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment: ${{ inputs.environment }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up kubeconfig and verify connection
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+        chmod 600 $HOME/.kube/config
+
+        # Verify connection
+        kubectl version --client
+        kubectl cluster-info
+
+    - name: Create image pull secret
+      run: |
+        kubectl create secret docker-registry ghcr-secret \
+          --docker-server=ghcr.io \
+          --docker-username=${{ github.actor }} \
+          --docker-password=${{ secrets.GHCR_TOKEN }} \
+          --docker-email=${{ github.actor }}@users.noreply.github.com \
+          --namespace=api \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+    - name: Update Kustomize image tag
+      run: |
+        cd iac/kostumize/apps/api
+        kustomize edit set image ghcr.io/${{ github.repository_owner }}/openapi-mock:${{ inputs.environment }}-${{ inputs.commit_sha }}
+
+    - name: Apply Kustomize manifest
+      run: |
+         kubectl apply -k iac/kostumize/apps/api

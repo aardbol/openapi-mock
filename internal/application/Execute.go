@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
+	"time"
 
 	"github.com/muonsoft/openapi-mock/internal/application/config"
 	"github.com/muonsoft/openapi-mock/internal/application/di"
@@ -87,6 +89,7 @@ func newMainCommand(opts *Options) *cobra.Command {
 		newVersionCommand(opts),
 		newServeCommand(opts),
 		newValidateCommand(opts),
+		newHealthcheckCommand(opts),
 	)
 
 	return mainCommand
@@ -172,6 +175,36 @@ func newValidateCommand(options *Options) *cobra.Command {
 			}
 
 			return nil
+		},
+	}
+}
+
+func newHealthcheckCommand(options *Options) *cobra.Command {
+	return &cobra.Command{
+		Use:           "healthcheck",
+		Short:         "Performs a health check by sending an HTTP request to the server",
+		SilenceUsage:  true,
+		SilenceErrors: true,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			// Create HTTP client with timeout
+			client := &http.Client{
+				Timeout: 2 * time.Second,
+			}
+
+			// Try to connect to the server on localhost:8080
+			resp, err := client.Get("http://localhost:8080/")
+			if err != nil {
+				return fmt.Errorf("health check failed: %w", err)
+			}
+			defer resp.Body.Close()
+
+			// Consider the server healthy if it responds with any HTTP status
+			// (even 404 is better than no response)
+			if resp.StatusCode >= 200 && resp.StatusCode < 500 {
+				return nil
+			}
+
+			return fmt.Errorf("health check failed: server returned status %d", resp.StatusCode)
 		},
 	}
 }

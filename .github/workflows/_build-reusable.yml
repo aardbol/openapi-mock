@@ -1,0 +1,93 @@
+name: Build Container Image
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment to build for (testing/production)'
+        required: true
+        type: string
+    secrets:
+      GH_TOKEN:
+        required: true
+      GHCR_TOKEN:
+        required: true
+    outputs:
+      image:
+        description: "Built image name"
+        value: ${{ jobs.build.outputs.image }}
+      tags:
+        description: "Built image tags"
+        value: ${{ jobs.build.outputs.tags }}
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    outputs:
+      image: ${{ steps.build-image.outputs.image }}
+      tags: ${{ steps.build-image.outputs.tags }}
+    steps:
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.18
+        id: go
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up dependencies
+        run: go mod download
+
+      # Disable golangci-lint because it's super outdated
+#      - name: Run golangci-lint
+#        uses: golangci/golangci-lint-action@v2
+#        with:
+#          version: v1.51
+
+      - name: Run tests
+        run: go test -v $(go list ./... | grep -v vendor)
+
+      - name: Build application
+        run: |
+          cd cmd/openapi-mock
+          go build -v
+          cd ../..
+
+      - name: Build OpenAPI Mock container image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          image: ${{ github.repository_owner }}/openapi-mock
+          tags: ${{ inputs.environment }}-latest ${{ inputs.environment }}-${{ github.sha }}
+          containerfiles: |
+            ./Containerfile
+          context: ./
+          build-args: |
+            APP_VERSION=${{ github.sha }}
+            BUILD_TIME=${{ github.event.head_commit.timestamp }}
+
+      - name: Log in to GHCR
+        uses: redhat-actions/podman-login@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GH_TOKEN }}
+
+      - name: Push OpenAPI Mock image to GHCR
+        uses: redhat-actions/push-to-registry@v2
+        with:
+          image: ${{ steps.build-image.outputs.image }}
+          tags: ${{ steps.build-image.outputs.tags }}
+          registry: ghcr.io
+
+      - name: Print container tags
+        run: |
+          echo "## 🐳 Built and pushed ${{ inputs.environment }} OpenAPI Mock container images" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Image:** \`ghcr.io/${{ steps.build-image.outputs.image }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Tags:**" >> $GITHUB_STEP_SUMMARY
+          for tag in ${{ steps.build-image.outputs.tags }}; do
+            echo "- \`ghcr.io/${{ steps.build-image.outputs.image }}:${tag}\`" >> $GITHUB_STEP_SUMMARY
+          done

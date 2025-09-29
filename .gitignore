@@ -1,9 +1,188 @@
-/var/
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+/bin/
+/dist/
+/build/
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Dependency directories
 /vendor/
+/var/
 
 # compiled application
-/cmd/openapi-mock/openapi-mock
-/cmd/openapi-mock/openapi-mock.*
+/cmd/openapi-mock/openapi-mock*
 
-docker-compose.yml
-docker-compose.yaml
+# Environment files
+.env
+.env.local
+.env.*.local
+*.env
+
+# Log files
+*.log
+logs/
+/tmp/
+/temp/
+
+# Build artifacts
+*.tar.gz
+*.zip
+
+# Configuration files (keep templates)
+config/*.yml
+config/*.yaml
+!config/*.example.*
+!config/*.template.*
+
+# Python virtual environment (for scripts)
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Coverage reports
+coverage.txt
+coverage.html
+coverage.xml
+c.out
+
+# Profiling files
+*.prof
+*.pprof
+
+# Documentation build
+/site/
+
+# Temporary files
+*.tmp
+*.bak
+*.backup
+*~
+
+# IDE and Editor files
+# JetBrains IDEs (IntelliJ, PyCharm, WebStorm, etc.)
+.idea/
+*.iws
+*.iml
+*.ipr
+.idea_modules/
+atlassian-ide-plugin.xml
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+.history/
+
+# Eclipse
+.metadata
+bin/
+tmp/
+*.swp
+*~.nib
+local.properties
+.settings/
+.loadpath
+.recommenders
+.project
+.externalToolBuilders/
+*.launch
+.pydevproject
+.cproject
+.classpath
+.factorypath
+.buildpath
+.target
+
+# Sublime Text
+*.sublime-workspace
+*.sublime-project
+
+# Vim
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-rt-v][a-z]
+[._]ss[a-gi-z]
+[._]sw[a-p]
+*.swo
+tags
+.netrwhist
+
+# Emacs
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# Nano
+*.save
+*.orig
+
+# OS generated files
+# macOS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+.AppleDouble
+.LSOverride
+.DocumentRevisions-V100
+.fseventsd
+.TemporaryItems
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+ehthumbs.db
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# Linux
+.directory
+.fuse_hidden*
+.Trash-*
+.nfs*
+
+# Terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+!*.tfvars.example
+!*.tfvars.template
+.terraform/
+tfplan
+tfplan.*
+*.tfplan
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc

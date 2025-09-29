@@ -1,0 +1,13 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: rate-limit-5-min
+  namespace: kong
+  annotations:
+    kubernetes.io/ingress.class: kong
+plugin: rate-limiting
+config:
+  minute: 60
+  # For multi-replica accuracy, we need to switch to 'redis' and configure Redis.
+  policy: local
+  limit_by: consumer

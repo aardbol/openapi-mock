@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kong
+resources:
+  - gateway-api-crds.yaml
+  - route/gatewayclass.yaml
+  - route/gateway.yaml
+  - route/httproute-api.yaml
+  - route/httproute-health.yaml
+  - plugins/key-auth.yaml
+  - plugins/rate-limit.yaml
+  # Example API key
+  - consumers/consumer-secret.yaml
+  - consumers/consumer.yaml
+
+helmCharts:
+  - name: kong
+    repo: https://charts.konghq.com
+    # When updating the chart version here, be sure to update the image tag versions in the values file if necessary
+    version: 2.52.0
+    releaseName: kong
+    namespace: kong
+    valuesFile: helm-values.yaml
+
+labels:
+  - pairs:
+      app: kong
+    includeSelectors: true
+    includeTemplates: true

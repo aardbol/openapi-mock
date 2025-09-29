@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openapi-mock
+  namespace: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openapi-mock
+  template:
+    metadata:
+      labels:
+        app: openapi-mock
+    spec:
+      containers:
+        - name: openapi-mock
+          image: muonsoft/openapi-mock:latest
+          env:
+            - name: OPENAPI_MOCK_SPECIFICATION_URL
+              value: https://raw.githubusercontent.com/muonsoft/openapi-mock/refs/heads/master/examples/petstore.yaml
+          ports:
+            - containerPort: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: openapi-mock
+  namespace: api
+spec:
+  selector:
+    app: openapi-mock
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
