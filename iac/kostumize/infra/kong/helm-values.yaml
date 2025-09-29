@@ -1,0 +1,18 @@
+image:
+  tag: "3.9.1-debian"
+
+ingressController:
+  tag: "3.5.2"
+  env:
+    - name: CONTROLLER_PUBLISH_SERVICE
+      value: kong/kong-kong-proxy
+
+proxy:
+  type: LoadBalancer
+  http:
+    enabled: true
+  tls:
+    enabled: true
+
+admin:
+  enabled: false
