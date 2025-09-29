@@ -2,8 +2,8 @@
 
 FROM --platform=$BUILDPLATFORM golang:1.25-alpine AS build
 
-ARG APP_VERSION=""
-ARG BUILD_TIME=""
+ARG APP_VERSION
+ARG BUILD_TIME
 ARG TARGETOS
 ARG TARGETARCH
 
@@ -12,14 +12,14 @@ RUN adduser -D -u 65532 -g '' openapi
 WORKDIR /src
 
 # Copy dependency files first for better caching
-COPY --link go.mod go.sum ./
+COPY go.mod go.sum ./
 
 # Download dependencies with cache mount
 RUN --mount=type=cache,target=/go/pkg/mod \
     --mount=type=cache,target=/root/.cache/go-build \
     go mod download
 
-COPY --link . .
+COPY . .
 
 # Build with optimizations and cache mounts
 WORKDIR /src/cmd/openapi-mock
