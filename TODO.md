@@ -1,0 +1,9 @@
+- different environments: dev, testing, staging, production
+- different EKS cluster regions
+- more performant instance types for worker nodes (currently limited by free tier choices)
+- implement region-specific subnetting via opentofu variables
+- upgrade EKS to v1.33 to have longest standard support cycle
+- implement ArgoCD or Flux for release management in Gitops style
+- use S3 bucket for state storage, facilitating working in team
+- deploy k8s resources high available with multiple replicas
+- increase dependabot frequency and add additional checks like github actions
