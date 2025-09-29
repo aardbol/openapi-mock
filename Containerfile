@@ -43,14 +43,5 @@ WORKDIR /app
 
 COPY --from=build --chown=65532:65532 --chmod=755 /out/openapi-mock /app/openapi-mock
 
-EXPOSE 8080
-
-HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-    CMD /app/openapi-mock healthcheck || exit 1
-
 ENTRYPOINT ["/app/openapi-mock"]
-CMD [
- "serve",
- "--specification-url",
- "https://raw.githubusercontent.com/OAI/OpenAPI-Specification/master/examples/v3.0/petstore.yaml"
-]
+CMD ["serve"]
