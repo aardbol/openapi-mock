@@ -177,9 +177,9 @@ $RECYCLE.BIN/
 !*.tfvars.example
 !*.tfvars.template
 .terraform/
-tfplan
-tfplan.*
-*.tfplan
+iac/opentofu/tfplan
+iac/opentofu/tfplan.*
+iac/opentofu/*.tfplan
 override.tf
 override.tf.json
 *_override.tf
