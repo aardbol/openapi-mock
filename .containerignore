@@ -1,8 +1,10 @@
-# Version control & # CI/CD
+# Version control & CI/CD
 .git*
 .travis.yml
 Jenkinsfile
 .circleci/
+.scrutinizer.yml
+.golangci.yml
 
 # Documentation
 *.md
@@ -21,9 +23,14 @@ bin/
 dist/
 build/
 *.exe
+*.exe~
 *.dll
 *.so
 *.dylib
+*.tar.gz
+*.zip
+*.test
+*.out
 
 # Test files
 *_test.go
@@ -50,11 +57,16 @@ temp/
 *.tmp
 *.log
 
-# Configuration examples
+# Configuration files
 config/
 *.example.*
 .env*
+*.env
 
 # License and legal
 LICENSE*
 COPYING*
+
+# Infrastructure & Scripts
+iac/
+scripts/
