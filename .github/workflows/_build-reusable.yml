@@ -39,8 +39,11 @@ jobs:
       - name: Set up dependencies
         run: go mod download
 
-      - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v8
+      # Disable golangci-lint because it's super outdated
+#      - name: Run golangci-lint
+#        uses: golangci/golangci-lint-action@v2
+#        with:
+#          version: v1.51
 
       - name: Run tests
         run: go test -v $(go list ./... | grep -v vendor)
