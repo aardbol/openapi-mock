@@ -7,3 +7,4 @@
 - use S3 bucket for state storage, facilitating working in team
 - deploy k8s resources high available with multiple replicas
 - increase dependabot frequency and add additional checks like github actions
+- improve grafana prometheus stack config: add better alerting, dashboards, HA, ingress & TLS, non-k8s trargets etc.
