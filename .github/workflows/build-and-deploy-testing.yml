@@ -1,0 +1,29 @@
+name: Build & Deploy Testing
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    if: github.actor != 'dependabot[bot]'
+    uses: ./.github/workflows/_build-reusable.yml
+    permissions:
+      packages: write
+      contents: read
+    with:
+      environment: testing
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+
+  deploy:
+    if: github.actor != 'dependabot[bot]'
+    uses: ./.github/workflows/_deploy-reusable.yml
+    needs: build
+    with:
+      environment: testing
+      commit_sha: ${{ github.sha }}
+    secrets:
+      KUBECONFIG: ${{ secrets.KUBECONFIG_TESTING }}
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}

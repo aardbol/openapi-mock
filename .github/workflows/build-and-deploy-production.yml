@@ -1,0 +1,30 @@
+name: Build & Deploy Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+
+jobs:
+  build:
+    uses: ./.github/workflows/_build-reusable.yml
+    permissions:
+      packages: write
+      contents: read
+    with:
+      environment: prod
+    secrets:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+
+  deploy:
+    uses: ./.github/workflows/_deploy-reusable.yml
+    needs: build
+    with:
+      environment: prod
+      commit_sha: ${{ github.sha }}
+    secrets:
+      KUBECONFIG: ${{ secrets.KUBECONFIG_PRODUCTION }}
+      GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
