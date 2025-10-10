@@ -36,7 +36,7 @@ variable "public_subnets" {
 
 variable "kubernetes_version" {
   description = "Kubernetes version"
-  default     = "1.31"
+  default     = "1.33"
 }
 
 variable "cluster_endpoint_public_access" {

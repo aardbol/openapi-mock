@@ -6,7 +6,7 @@ module "eks" {
   subnet_ids = module.vpc.private_subnets
   name       = "${var.project_name}-${var.environment}"
 
-  kubernetes_version = var.kubernetes_version
+  kubernetes_version  = var.kubernetes_version
   deletion_protection = var.environment == "dev" ? false : true
 
   endpoint_public_access       = var.cluster_endpoint_public_access
@@ -14,8 +14,8 @@ module "eks" {
   endpoint_public_access_cidrs = var.cluster_endpoint_public_access_cidrs
 
   encryption_config = {
-      provider_key_arn = aws_kms_key.eks.arn
-      resources        = ["secrets"]
+    provider_key_arn = aws_kms_key.eks.arn
+    resources        = ["secrets"]
   }
 
   # Add the current caller identity as an administrator
@@ -50,11 +50,11 @@ module "eks" {
   }
 
   addons = {
-    coredns                = {}
-    kube-proxy             = {}
-    aws-ebs-csi-driver     = {}
-    vpc-cni                = { before_compute = true }
+    coredns = {}
+    kube-proxy = {}
+    vpc-cni = { before_compute = true }
     eks-pod-identity-agent = { before_compute = true }
+    aws-ebs-csi-driver = {}
   }
 }
 
@@ -95,5 +95,23 @@ resource "aws_security_group" "node_group_additional" {
 
   tags = {
     Name = "${var.project_name}-${var.environment}-node-additional"
+  }
+}
+
+module "aws_ebs_csi_pod_identity" {
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 2.0"
+
+  name = "aws-ebs-csi"
+
+  attach_aws_ebs_csi_policy = true
+  aws_ebs_csi_kms_arns      = [aws_kms_key.eks.arn]
+
+  associations = {
+    eks = {
+      cluster_name = module.eks.cluster_name
+      namespace       = "kube-system"
+      service_account = "ebs-csi-controller-sa"
+    }
   }
 }
